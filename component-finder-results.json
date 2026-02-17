@@ -1,0 +1,20 @@
+{
+  "matches": [
+    {
+      "filePath": "sample-files/vue-sample.vue",
+      "line": 3,
+      "componentName": "q-form",
+      "componentType": "form"
+    },
+    {
+      "filePath": "sample-files/react-sample.jsx",
+      "line": 9,
+      "componentName": "Form",
+      "componentType": "form"
+    }
+  ],
+  "totalCount": 2,
+  "scanTimeMs": 0,
+  "componentType": "form",
+  "scannedFiles": 4
+}
