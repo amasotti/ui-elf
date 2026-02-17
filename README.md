@@ -1,7 +1,6 @@
 # UI-Elf : The UI Element finder CLI
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/amasotti/ui-elf)](https://goreportcard.com/report/github.com/amasotti/ui-elf)
 [![Test & Lint](https://github.com/amasotti/ui-elf/actions/workflows/test-lint.yml/badge.svg)](https://github.com/amasotti/ui-elf/actions/workflows/test-lint.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/amasotti/ui-elf)
 
