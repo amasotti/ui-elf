@@ -157,7 +157,7 @@ func TestWrite(t *testing.T) {
 
 	t.Run("writes JSON to file", func(t *testing.T) {
 		tmpFile := "test-output.json"
-		defer os.Remove(tmpFile)
+		defer func() { _ = os.Remove(tmpFile) }()
 
 		err := formatter.Write(result, "json", tmpFile)
 		if err != nil {

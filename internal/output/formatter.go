@@ -44,8 +44,8 @@ func (f *OutputFormatter) FormatTerminal(result *types.ScanResult) string {
 	sb.WriteString(strings.Repeat("-", 50))
 	sb.WriteString("\n")
 	fmt.Fprintf(&sb, "Total components found: %d\n", result.TotalCount)
-	sb.WriteString(fmt.Sprintf("Files scanned: %d\n", result.ScannedFiles))
-	sb.WriteString(fmt.Sprintf("Scan time: %dms\n", result.ScanTimeMs))
+	fmt.Fprintf(&sb, "Files scanned: %d\n", result.ScannedFiles)
+	fmt.Fprintf(&sb, "Scan time: %dms\n", result.ScanTimeMs)
 
 	return sb.String()
 }
