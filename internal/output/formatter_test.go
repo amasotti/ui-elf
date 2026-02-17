@@ -186,7 +186,7 @@ func TestWrite(t *testing.T) {
 	})
 	
 	t.Run("uses default filename when not specified", func(t *testing.T) {
-		defaultFile := "component-finder-results.json"
+		defaultFile := "ui-elf-results.json"
 		defer os.Remove(defaultFile)
 		
 		err := formatter.Write(result, "json", "")

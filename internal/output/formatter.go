@@ -73,7 +73,7 @@ func (f *OutputFormatter) Write(result *types.ScanResult, format string, outputP
 		}
 		
 		if outputPath == "" {
-			outputPath = "component-finder-results.json"
+			outputPath = "ui-elf-results.json"
 		}
 		
 		if err := os.WriteFile(outputPath, []byte(jsonStr), 0644); err != nil {
@@ -93,7 +93,7 @@ func (f *OutputFormatter) Write(result *types.ScanResult, format string, outputP
 		}
 		
 		if outputPath == "" {
-			outputPath = "component-finder-results.json"
+			outputPath = "ui-elf-results.json"
 		}
 		
 		if err := os.WriteFile(outputPath, []byte(jsonStr), 0644); err != nil {
