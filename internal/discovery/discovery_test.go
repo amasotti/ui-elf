@@ -3,6 +3,7 @@ package discovery
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"ui-elf/internal/types"
@@ -180,7 +181,7 @@ func TestDiscoverFiles(t *testing.T) {
 		// Verify all files are in src/components
 		for _, file := range files {
 			relPath, _ := filepath.Rel(tmpDir, file)
-			if !filepath.HasPrefix(relPath, "src/components") {
+			if !strings.HasPrefix(relPath, "src/components") {
 				t.Errorf("File %s is not in src/components", relPath)
 			}
 		}

@@ -50,7 +50,7 @@ func extractTemplateSection(content string) (string, int) {
 	templateRegex := regexp.MustCompile(`(?s)<template[^>]*>(.*?)</template>`)
 	match := templateRegex.FindStringSubmatchIndex(content)
 
-	if match == nil || len(match) < 4 {
+	if len(match) < 4 {
 		return "", 0
 	}
 
@@ -70,7 +70,7 @@ func extractScriptSection(content string) (string, int) {
 	scriptRegex := regexp.MustCompile(`(?s)<script[^>]*>(.*?)</script>`)
 	match := scriptRegex.FindStringSubmatchIndex(content)
 
-	if match == nil || len(match) < 4 {
+	if len(match) < 4 {
 		return "", 0
 	}
 

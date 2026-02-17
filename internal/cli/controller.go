@@ -57,7 +57,10 @@ where components are used and providing usage statistics.`,
 	c.rootCmd.Flags().StringP("output", "o", "terminal", "Output format: terminal, json, or both (default: terminal)")
 
 	// Mark required flags
-	c.rootCmd.MarkFlagRequired("component-type")
+	if err := c.rootCmd.MarkFlagRequired("component-type"); err != nil {
+		fmt.Fprintf(os.Stderr, "Error marking flag required: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 // run executes the main CLI logic

@@ -24,7 +24,7 @@ func (f *OutputFormatter) FormatTerminal(result *types.ScanResult) string {
 	var sb strings.Builder
 
 	// Header
-	sb.WriteString(fmt.Sprintf("\nComponent Finder Results - %s\n", result.ComponentType))
+	fmt.Fprintf(&sb, "\nComponent Finder Results - %s\n", result.ComponentType)
 	sb.WriteString(strings.Repeat("=", 50))
 	sb.WriteString("\n\n")
 
@@ -34,8 +34,8 @@ func (f *OutputFormatter) FormatTerminal(result *types.ScanResult) string {
 	} else {
 		sb.WriteString("Found components in:\n\n")
 		for _, match := range result.Matches {
-			sb.WriteString(fmt.Sprintf("  %s (line %d): %s\n",
-				match.FilePath, match.Line, match.ComponentName))
+			fmt.Fprintf(&sb, "  %s (line %d): %s\n",
+				match.FilePath, match.Line, match.ComponentName)
 		}
 	}
 
@@ -43,7 +43,7 @@ func (f *OutputFormatter) FormatTerminal(result *types.ScanResult) string {
 	sb.WriteString("\n")
 	sb.WriteString(strings.Repeat("-", 50))
 	sb.WriteString("\n")
-	sb.WriteString(fmt.Sprintf("Total components found: %d\n", result.TotalCount))
+	fmt.Fprintf(&sb, "Total components found: %d\n", result.TotalCount)
 	sb.WriteString(fmt.Sprintf("Files scanned: %d\n", result.ScannedFiles))
 	sb.WriteString(fmt.Sprintf("Scan time: %dms\n", result.ScanTimeMs))
 
