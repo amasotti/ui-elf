@@ -1,3 +1,4 @@
+// Package registry maintains mappings between component types and library-specific implementations.
 package registry
 
 import "strings"
@@ -18,7 +19,7 @@ func NewComponentMappingRegistry() *ComponentMappingRegistry {
 	registry := &ComponentMappingRegistry{
 		mappings: make(map[string]ComponentMapping),
 	}
-	
+
 	// Form mappings
 	registry.mappings["form"] = ComponentMapping{
 		Type: "form",
@@ -28,7 +29,7 @@ func NewComponentMappingRegistry() *ComponentMappingRegistry {
 			"material": {"v-form", "VForm", "Form", "MuiForm"},
 		},
 	}
-	
+
 	// Button mappings
 	registry.mappings["button"] = ComponentMapping{
 		Type: "button",
@@ -38,7 +39,7 @@ func NewComponentMappingRegistry() *ComponentMappingRegistry {
 			"material": {"v-btn", "VBtn", "Button", "MuiButton"},
 		},
 	}
-	
+
 	// Dialog mappings
 	registry.mappings["dialog"] = ComponentMapping{
 		Type: "dialog",
@@ -48,7 +49,7 @@ func NewComponentMappingRegistry() *ComponentMappingRegistry {
 			"material": {"v-dialog", "VDialog", "Dialog", "MuiDialog"},
 		},
 	}
-	
+
 	return registry
 }
 
@@ -65,7 +66,7 @@ func (r *ComponentMappingRegistry) MatchesComponentType(componentName string, co
 		// For custom component types, do exact name match
 		return strings.EqualFold(componentName, componentType)
 	}
-	
+
 	// Check all patterns for the component type
 	for _, patterns := range mapping.Patterns {
 		for _, pattern := range patterns {
@@ -74,6 +75,6 @@ func (r *ComponentMappingRegistry) MatchesComponentType(componentName string, co
 			}
 		}
 	}
-	
+
 	return false
 }

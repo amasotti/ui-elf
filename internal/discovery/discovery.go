@@ -1,3 +1,4 @@
+// Package discovery handles file system traversals to find relevant files.
 package discovery
 
 import (
@@ -19,38 +20,38 @@ func NewFileDiscoveryService() *FileDiscoveryService {
 // DiscoverFiles traverses the directory tree and returns files matching the filter criteria
 func (s *FileDiscoveryService) DiscoverFiles(rootDir string, filter types.FileFilter) ([]string, error) {
 	var files []string
-	
+
 	err := filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		
+
 		// Skip directories
 		if info.IsDir() {
 			return nil
 		}
-		
+
 		// Check if file should be excluded
 		if s.ShouldExcludeFile(path, filter) {
 			return nil
 		}
-		
+
 		// Check if file has a valid extension
 		if !s.hasValidExtension(path, filter.FileExtensions) {
 			return nil
 		}
-		
+
 		// If include directories are specified, check if file is in one of them
 		if len(filter.IncludeDirectories) > 0 {
 			if !s.isInIncludedDirectory(path, rootDir, filter.IncludeDirectories) {
 				return nil
 			}
 		}
-		
+
 		files = append(files, path)
 		return nil
 	})
-	
+
 	return files, err
 }
 
@@ -68,12 +69,12 @@ func (s *FileDiscoveryService) ShouldExcludeFile(filePath string, filter types.F
 func (s *FileDiscoveryService) matchesPattern(filePath string, pattern string) bool {
 	// Normalize path separators
 	normalizedPath := filepath.ToSlash(filePath)
-	
+
 	// Check if path contains the pattern
 	if strings.Contains(normalizedPath, pattern) {
 		return true
 	}
-	
+
 	// Check if any directory component matches the pattern
 	parts := strings.Split(normalizedPath, "/")
 	for _, part := range parts {
@@ -81,7 +82,7 @@ func (s *FileDiscoveryService) matchesPattern(filePath string, pattern string) b
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -90,14 +91,14 @@ func (s *FileDiscoveryService) hasValidExtension(filePath string, extensions []s
 	if len(extensions) == 0 {
 		return true
 	}
-	
+
 	ext := filepath.Ext(filePath)
 	for _, validExt := range extensions {
 		if ext == validExt {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -108,18 +109,18 @@ func (s *FileDiscoveryService) isInIncludedDirectory(filePath string, rootDir st
 	if err != nil {
 		return false
 	}
-	
+
 	normalizedRelPath := filepath.ToSlash(relPath)
-	
+
 	for _, includeDir := range includeDirectories {
 		normalizedIncludeDir := filepath.ToSlash(includeDir)
-		
+
 		// Check if file is in the included directory or its subdirectories
-		if strings.HasPrefix(normalizedRelPath, normalizedIncludeDir+"/") || 
-		   normalizedRelPath == normalizedIncludeDir {
+		if strings.HasPrefix(normalizedRelPath, normalizedIncludeDir+"/") ||
+			normalizedRelPath == normalizedIncludeDir {
 			return true
 		}
 	}
-	
+
 	return false
 }

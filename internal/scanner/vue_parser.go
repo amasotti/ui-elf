@@ -25,21 +25,21 @@ func (p *VueParser) SupportsFile(filePath string) bool {
 // Handles both template syntax and JSX in script sections
 func (p *VueParser) Parse(fileContent string, filePath string) ([]types.ComponentMatch, error) {
 	var matches []types.ComponentMatch
-	
+
 	// Extract template section
 	templateContent, templateStartLine := extractTemplateSection(fileContent)
 	if templateContent != "" {
 		templateMatches := parseTemplateComponents(templateContent, filePath, templateStartLine)
 		matches = append(matches, templateMatches...)
 	}
-	
+
 	// Extract script section and look for JSX
 	scriptContent, scriptStartLine := extractScriptSection(fileContent)
 	if scriptContent != "" {
 		jsxMatches := parseJSXComponents(scriptContent, filePath, scriptStartLine)
 		matches = append(matches, jsxMatches...)
 	}
-	
+
 	return matches, nil
 }
 
@@ -49,17 +49,17 @@ func extractTemplateSection(content string) (string, int) {
 	// Match <template> or <template lang="..."> tags
 	templateRegex := regexp.MustCompile(`(?s)<template[^>]*>(.*?)</template>`)
 	match := templateRegex.FindStringSubmatchIndex(content)
-	
+
 	if match == nil || len(match) < 4 {
 		return "", 0
 	}
-	
+
 	// Extract the template content (first capture group)
 	templateContent := content[match[2]:match[3]]
-	
+
 	// Calculate the starting line number
 	startLine := strings.Count(content[:match[2]], "\n") + 1
-	
+
 	return templateContent, startLine
 }
 
@@ -69,17 +69,17 @@ func extractScriptSection(content string) (string, int) {
 	// Match <script> or <script lang="..."> or <script setup> tags
 	scriptRegex := regexp.MustCompile(`(?s)<script[^>]*>(.*?)</script>`)
 	match := scriptRegex.FindStringSubmatchIndex(content)
-	
+
 	if match == nil || len(match) < 4 {
 		return "", 0
 	}
-	
+
 	// Extract the script content (first capture group)
 	scriptContent := content[match[2]:match[3]]
-	
+
 	// Calculate the starting line number
 	startLine := strings.Count(content[:match[2]], "\n") + 1
-	
+
 	return scriptContent, startLine
 }
 
@@ -87,26 +87,26 @@ func extractScriptSection(content string) (string, int) {
 // Matches both self-closing and paired tags: <ComponentName /> and <ComponentName>
 func parseTemplateComponents(templateContent string, filePath string, baseLineNumber int) []types.ComponentMatch {
 	var matches []types.ComponentMatch
-	
+
 	// Regex to match opening tags - <tagname followed by whitespace, >, /, or end of line
 	// This handles multi-line tags where attributes span multiple lines
 	componentRegex := regexp.MustCompile(`<([A-Za-z][A-Za-z0-9-]*)(?:[\s>/]|$)`)
-	
+
 	lines := strings.Split(templateContent, "\n")
 	seenComponents := make(map[string]map[int]bool) // Track component:line to avoid duplicates
-	
+
 	for lineIdx, line := range lines {
 		componentMatches := componentRegex.FindAllStringSubmatch(line, -1)
-		
+
 		for _, match := range componentMatches {
 			if len(match) >= 2 {
 				componentName := match[1]
-				
+
 				// Skip HTML tags (lowercase only, no hyphens or uppercase)
 				if isHTMLTag(componentName) {
 					continue
 				}
-				
+
 				// Skip if we've already seen this component on this line
 				if seenComponents[componentName] == nil {
 					seenComponents[componentName] = make(map[int]bool)
@@ -115,7 +115,7 @@ func parseTemplateComponents(templateContent string, filePath string, baseLineNu
 					continue
 				}
 				seenComponents[componentName][lineIdx] = true
-				
+
 				matches = append(matches, types.ComponentMatch{
 					FilePath:      filePath,
 					Line:          baseLineNumber + lineIdx,
@@ -125,7 +125,7 @@ func parseTemplateComponents(templateContent string, filePath string, baseLineNu
 			}
 		}
 	}
-	
+
 	return matches
 }
 
@@ -133,21 +133,21 @@ func parseTemplateComponents(templateContent string, filePath string, baseLineNu
 // Handles JSX elements like <Component /> or <Component>
 func parseJSXComponents(scriptContent string, filePath string, baseLineNumber int) []types.ComponentMatch {
 	var matches []types.ComponentMatch
-	
+
 	// Regex to match JSX component tags
 	// JSX components must start with uppercase letter
 	componentRegex := regexp.MustCompile(`<([A-Z][A-Za-z0-9]*)(?:[\s>/]|$)`)
-	
+
 	lines := strings.Split(scriptContent, "\n")
 	seenComponents := make(map[string]map[int]bool) // Track component:line to avoid duplicates
-	
+
 	for lineIdx, line := range lines {
 		componentMatches := componentRegex.FindAllStringSubmatch(line, -1)
-		
+
 		for _, match := range componentMatches {
 			if len(match) >= 2 {
 				componentName := match[1]
-				
+
 				// Skip if we've already seen this component on this line
 				if seenComponents[componentName] == nil {
 					seenComponents[componentName] = make(map[int]bool)
@@ -156,7 +156,7 @@ func parseJSXComponents(scriptContent string, filePath string, baseLineNumber in
 					continue
 				}
 				seenComponents[componentName][lineIdx] = true
-				
+
 				matches = append(matches, types.ComponentMatch{
 					FilePath:      filePath,
 					Line:          baseLineNumber + lineIdx,
@@ -166,7 +166,7 @@ func parseJSXComponents(scriptContent string, filePath string, baseLineNumber in
 			}
 		}
 	}
-	
+
 	return matches
 }
 
@@ -190,7 +190,7 @@ func isHTMLTag(tagName string) bool {
 		"meta": true, "title": true, "head": true, "body": true, "html": true,
 		"button": true, "form": true, "dialog": true,
 	}
-	
+
 	// Check if it's a standard HTML tag (must be all lowercase and in the map)
 	lowerTag := strings.ToLower(tagName)
 	return lowerTag == tagName && htmlTags[lowerTag]

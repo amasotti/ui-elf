@@ -157,20 +157,20 @@ func (c *Controller) executeScan(options *types.CLIOptions) (*types.ScanResult, 
 	// Import required packages at the top of the file
 	// Create file discovery service
 	discoveryService := discovery.NewFileDiscoveryService()
-	
+
 	// Build file filter
 	filter := types.FileFilter{
 		ExcludePatterns:    []string{"node_modules", "test", "tests", "__tests__", ".test.", ".spec."},
 		IncludeDirectories: options.Filter,
 		FileExtensions:     []string{".vue", ".jsx", ".tsx"},
 	}
-	
+
 	// Discover files
 	files, err := discoveryService.DiscoverFiles(options.Directory, filter)
 	if err != nil {
 		return nil, fmt.Errorf("failed to discover files: %w", err)
 	}
-	
+
 	// Check if any files were found
 	if len(files) == 0 {
 		return &types.ScanResult{
@@ -181,39 +181,39 @@ func (c *Controller) executeScan(options *types.CLIOptions) (*types.ScanResult, 
 			ScannedFiles:  0,
 		}, nil
 	}
-	
+
 	// Create component registry
 	registry := registry.NewComponentMappingRegistry()
-	
+
 	// Create parsers
 	parsers := []scanner.ComponentParser{
 		scanner.NewVueParser(),
 		scanner.NewReactParser(),
 	}
-	
+
 	// Create scanner
 	componentScanner := scanner.NewComponentScanner(parsers, registry)
-	
+
 	// Execute scan
 	result, err := componentScanner.Scan(files, options.ComponentType)
 	if err != nil {
 		return nil, fmt.Errorf("scan execution failed: %w", err)
 	}
-	
+
 	return result, nil
 }
 
 // displayOutput formats and displays the scan results
 func (c *Controller) displayOutput(result *types.ScanResult, options *types.CLIOptions) error {
 	formatter := output.NewOutputFormatter()
-	
+
 	// Determine output path for JSON (empty string will use default)
 	outputPath := ""
-	
+
 	// Write output according to format
 	if err := formatter.Write(result, options.OutputFormat, outputPath); err != nil {
 		return err
 	}
-	
+
 	return nil
 }

@@ -6,7 +6,7 @@ import (
 
 func TestVueParser_SupportsFile(t *testing.T) {
 	parser := NewVueParser()
-	
+
 	tests := []struct {
 		name     string
 		filePath string
@@ -20,7 +20,7 @@ func TestVueParser_SupportsFile(t *testing.T) {
 		{"js file", "component.js", false},
 		{"no extension", "component", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := parser.SupportsFile(tt.filePath)
@@ -33,7 +33,7 @@ func TestVueParser_SupportsFile(t *testing.T) {
 
 func TestVueParser_Parse_TemplateSection(t *testing.T) {
 	parser := NewVueParser()
-	
+
 	tests := []struct {
 		name          string
 		content       string
@@ -134,19 +134,19 @@ export default {
 			expectedNames: []string{},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches, err := parser.Parse(tt.content, "test.vue")
-			
+
 			if err != nil {
 				t.Fatalf("Parse() error = %v", err)
 			}
-			
+
 			if len(matches) != tt.expectedCount {
 				t.Errorf("Parse() returned %d matches, want %d", len(matches), tt.expectedCount)
 			}
-			
+
 			// Check component names
 			for i, expectedName := range tt.expectedNames {
 				if i >= len(matches) {
@@ -154,7 +154,7 @@ export default {
 					continue
 				}
 				if matches[i].ComponentName != expectedName {
-					t.Errorf("Match %d: got component name %q, want %q", 
+					t.Errorf("Match %d: got component name %q, want %q",
 						i, matches[i].ComponentName, expectedName)
 				}
 			}
@@ -164,7 +164,7 @@ export default {
 
 func TestVueParser_Parse_ScriptSection_JSX(t *testing.T) {
 	parser := NewVueParser()
-	
+
 	tests := []struct {
 		name          string
 		content       string
@@ -232,19 +232,19 @@ export default {
 			expectedNames: []string{},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches, err := parser.Parse(tt.content, "test.vue")
-			
+
 			if err != nil {
 				t.Fatalf("Parse() error = %v", err)
 			}
-			
+
 			if len(matches) != tt.expectedCount {
 				t.Errorf("Parse() returned %d matches, want %d", len(matches), tt.expectedCount)
 			}
-			
+
 			// Check component names
 			for i, expectedName := range tt.expectedNames {
 				if i >= len(matches) {
@@ -252,7 +252,7 @@ export default {
 					continue
 				}
 				if matches[i].ComponentName != expectedName {
-					t.Errorf("Match %d: got component name %q, want %q", 
+					t.Errorf("Match %d: got component name %q, want %q",
 						i, matches[i].ComponentName, expectedName)
 				}
 			}
@@ -262,7 +262,7 @@ export default {
 
 func TestVueParser_Parse_LineNumbers(t *testing.T) {
 	parser := NewVueParser()
-	
+
 	content := `<template>
   <div>
     <q-form>
@@ -276,24 +276,24 @@ export default {
   name: 'TestComponent'
 }
 </script>`
-	
+
 	matches, err := parser.Parse(content, "test.vue")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// We expect to find q-form and q-btn (div is HTML tag and should be ignored)
 	if len(matches) != 2 {
 		t.Fatalf("Expected 2 matches, got %d", len(matches))
 	}
-	
+
 	// Check that line numbers are reasonable (not 0 or negative)
 	for i, match := range matches {
 		if match.Line <= 0 {
 			t.Errorf("Match %d: line number %d should be positive", i, match.Line)
 		}
-		
+
 		// q-form should be on line 3, q-btn on line 4
 		// (accounting for template start line)
 		if match.ComponentName == "q-form" && match.Line != 3 {
@@ -307,22 +307,22 @@ export default {
 
 func TestVueParser_Parse_FilePath(t *testing.T) {
 	parser := NewVueParser()
-	
+
 	content := `<template>
   <q-form />
 </template>`
-	
+
 	filePath := "src/components/MyForm.vue"
 	matches, err := parser.Parse(content, filePath)
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	if len(matches) != 1 {
 		t.Fatalf("Expected 1 match, got %d", len(matches))
 	}
-	
+
 	if matches[0].FilePath != filePath {
 		t.Errorf("FilePath = %q, want %q", matches[0].FilePath, filePath)
 	}
@@ -330,7 +330,7 @@ func TestVueParser_Parse_FilePath(t *testing.T) {
 
 func TestVueParser_Parse_ComplexRealWorld(t *testing.T) {
 	parser := NewVueParser()
-	
+
 	content := `<template>
   <q-page class="flex flex-center">
     <q-form @submit="onSubmit" class="q-gutter-md">
@@ -387,21 +387,21 @@ export default {
   }
 }
 </script>`
-	
+
 	matches, err := parser.Parse(content, "test.vue")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// Expected components (excluding HTML tags like div):
-	// q-page, q-form, q-input, q-select, q-btn (2x), q-dialog, q-card, 
+	// q-page, q-form, q-input, q-select, q-btn (2x), q-dialog, q-card,
 	// q-card-section, q-card-actions, q-btn (in dialog)
 	expectedComponents := []string{
 		"q-page", "q-form", "q-input", "q-select", "q-btn", "q-btn",
 		"q-dialog", "q-card", "q-card-section", "q-card-actions", "q-btn",
 	}
-	
+
 	// Debug: print what we found
 	if len(matches) != len(expectedComponents) {
 		t.Logf("Found components:")
@@ -409,24 +409,24 @@ export default {
 			t.Logf("  %d: %s (line %d)", i, match.ComponentName, match.Line)
 		}
 	}
-	
+
 	if len(matches) != len(expectedComponents) {
 		t.Errorf("Expected %d components, got %d", len(expectedComponents), len(matches))
 	}
-	
+
 	// Verify all expected components are found
 	foundComponents := make(map[string]int)
 	for _, match := range matches {
 		foundComponents[match.ComponentName]++
 	}
-	
+
 	// Check q-btn appears 3 times
 	if foundComponents["q-btn"] != 3 {
 		t.Errorf("Expected 3 q-btn components, got %d", foundComponents["q-btn"])
 	}
-	
+
 	// Check other components appear once
-	singleComponents := []string{"q-page", "q-form", "q-input", "q-select", 
+	singleComponents := []string{"q-page", "q-form", "q-input", "q-select",
 		"q-dialog", "q-card", "q-card-section", "q-card-actions"}
 	for _, comp := range singleComponents {
 		if foundComponents[comp] != 1 {
@@ -477,18 +477,18 @@ export default {}
 			expectedStartLine: 0,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			content, startLine := extractTemplateSection(tt.content)
-			
+
 			if content != tt.expectedContent {
-				t.Errorf("extractTemplateSection() content = %q, want %q", 
+				t.Errorf("extractTemplateSection() content = %q, want %q",
 					content, tt.expectedContent)
 			}
-			
+
 			if startLine != tt.expectedStartLine {
-				t.Errorf("extractTemplateSection() startLine = %d, want %d", 
+				t.Errorf("extractTemplateSection() startLine = %d, want %d",
 					startLine, tt.expectedStartLine)
 			}
 		})
@@ -545,19 +545,19 @@ export default {}
 			expectedStartLine: 0,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			content, startLine := extractScriptSection(tt.content)
-			
+
 			hasScript := content != ""
 			if hasScript != tt.expectedHasScript {
-				t.Errorf("extractScriptSection() hasScript = %v, want %v", 
+				t.Errorf("extractScriptSection() hasScript = %v, want %v",
 					hasScript, tt.expectedHasScript)
 			}
-			
+
 			if startLine != tt.expectedStartLine {
-				t.Errorf("extractScriptSection() startLine = %d, want %d", 
+				t.Errorf("extractScriptSection() startLine = %d, want %d",
 					startLine, tt.expectedStartLine)
 			}
 		})
@@ -582,7 +582,7 @@ func TestIsHTMLTag(t *testing.T) {
 		{"q-form", "q-form", false},
 		{"QForm", "QForm", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := isHTMLTag(tt.tagName)

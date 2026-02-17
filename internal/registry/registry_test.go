@@ -4,11 +4,11 @@ import "testing"
 
 func TestNewComponentMappingRegistry(t *testing.T) {
 	registry := NewComponentMappingRegistry()
-	
+
 	if registry == nil {
 		t.Fatal("Expected registry to be created, got nil")
 	}
-	
+
 	if len(registry.mappings) == 0 {
 		t.Fatal("Expected registry to have mappings, got empty map")
 	}
@@ -16,7 +16,7 @@ func TestNewComponentMappingRegistry(t *testing.T) {
 
 func TestGetMapping(t *testing.T) {
 	registry := NewComponentMappingRegistry()
-	
+
 	tests := []struct {
 		name          string
 		componentType string
@@ -27,7 +27,7 @@ func TestGetMapping(t *testing.T) {
 		{"dialog mapping exists", "dialog", true},
 		{"unknown mapping", "unknown", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, exists := registry.GetMapping(tt.componentType)
@@ -40,7 +40,7 @@ func TestGetMapping(t *testing.T) {
 
 func TestMatchesComponentType_Forms(t *testing.T) {
 	registry := NewComponentMappingRegistry()
-	
+
 	tests := []struct {
 		name          string
 		componentName string
@@ -57,12 +57,12 @@ func TestMatchesComponentType_Forms(t *testing.T) {
 		{"case insensitive quasar", "Q-FORM", true},
 		{"non-form component", "button", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches := registry.MatchesComponentType(tt.componentName, "form")
 			if matches != tt.shouldMatch {
-				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v", 
+				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v",
 					tt.componentName, "form", matches, tt.shouldMatch)
 			}
 		})
@@ -71,7 +71,7 @@ func TestMatchesComponentType_Forms(t *testing.T) {
 
 func TestMatchesComponentType_Buttons(t *testing.T) {
 	registry := NewComponentMappingRegistry()
-	
+
 	tests := []struct {
 		name          string
 		componentName string
@@ -87,12 +87,12 @@ func TestMatchesComponentType_Buttons(t *testing.T) {
 		{"case insensitive", "BUTTON", true},
 		{"non-button component", "form", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches := registry.MatchesComponentType(tt.componentName, "button")
 			if matches != tt.shouldMatch {
-				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v", 
+				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v",
 					tt.componentName, "button", matches, tt.shouldMatch)
 			}
 		})
@@ -101,7 +101,7 @@ func TestMatchesComponentType_Buttons(t *testing.T) {
 
 func TestMatchesComponentType_Dialogs(t *testing.T) {
 	registry := NewComponentMappingRegistry()
-	
+
 	tests := []struct {
 		name          string
 		componentName string
@@ -117,12 +117,12 @@ func TestMatchesComponentType_Dialogs(t *testing.T) {
 		{"case insensitive", "DIALOG", true},
 		{"non-dialog component", "button", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches := registry.MatchesComponentType(tt.componentName, "dialog")
 			if matches != tt.shouldMatch {
-				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v", 
+				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v",
 					tt.componentName, "dialog", matches, tt.shouldMatch)
 			}
 		})
@@ -131,7 +131,7 @@ func TestMatchesComponentType_Dialogs(t *testing.T) {
 
 func TestMatchesComponentType_CustomComponent(t *testing.T) {
 	registry := NewComponentMappingRegistry()
-	
+
 	// For custom component types (not in registry), should do exact name match
 	tests := []struct {
 		name          string
@@ -143,12 +143,12 @@ func TestMatchesComponentType_CustomComponent(t *testing.T) {
 		{"case insensitive match", "mycustomcomponent", "MyCustomComponent", true},
 		{"no match", "OtherComponent", "MyCustomComponent", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches := registry.MatchesComponentType(tt.componentName, tt.componentType)
 			if matches != tt.shouldMatch {
-				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v", 
+				t.Errorf("MatchesComponentType(%q, %q) = %v, want %v",
 					tt.componentName, tt.componentType, matches, tt.shouldMatch)
 			}
 		})

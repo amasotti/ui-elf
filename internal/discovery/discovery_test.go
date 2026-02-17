@@ -10,7 +10,7 @@ import (
 
 func TestShouldExcludeFile(t *testing.T) {
 	service := NewFileDiscoveryService()
-	
+
 	tests := []struct {
 		name     string
 		filePath string
@@ -50,7 +50,7 @@ func TestShouldExcludeFile(t *testing.T) {
 			expected: false,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := service.ShouldExcludeFile(tt.filePath, tt.filter)
@@ -63,7 +63,7 @@ func TestShouldExcludeFile(t *testing.T) {
 
 func TestHasValidExtension(t *testing.T) {
 	service := NewFileDiscoveryService()
-	
+
 	tests := []struct {
 		name       string
 		filePath   string
@@ -101,7 +101,7 @@ func TestHasValidExtension(t *testing.T) {
 			expected:   true,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := service.hasValidExtension(tt.filePath, tt.extensions)
@@ -115,7 +115,7 @@ func TestHasValidExtension(t *testing.T) {
 func TestDiscoverFiles(t *testing.T) {
 	// Create a temporary directory structure for testing
 	tmpDir := t.TempDir()
-	
+
 	// Create test files
 	testFiles := []string{
 		"src/components/Button.vue",
@@ -125,58 +125,58 @@ func TestDiscoverFiles(t *testing.T) {
 		"node_modules/package/file.js",
 		"tests/unit/test.spec.js",
 	}
-	
+
 	for _, file := range testFiles {
 		fullPath := filepath.Join(tmpDir, file)
 		dir := filepath.Dir(fullPath)
-		
+
 		err := os.MkdirAll(dir, 0755)
 		if err != nil {
 			t.Fatalf("Failed to create directory: %v", err)
 		}
-		
+
 		err = os.WriteFile(fullPath, []byte("test content"), 0644)
 		if err != nil {
 			t.Fatalf("Failed to create file: %v", err)
 		}
 	}
-	
+
 	service := NewFileDiscoveryService()
-	
+
 	t.Run("discovers files with extension filter", func(t *testing.T) {
 		filter := types.FileFilter{
 			ExcludePatterns: []string{"node_modules", ".test.", ".spec."},
 			FileExtensions:  []string{".vue", ".jsx", ".tsx"},
 		}
-		
+
 		files, err := service.DiscoverFiles(tmpDir, filter)
 		if err != nil {
 			t.Fatalf("DiscoverFiles() error = %v", err)
 		}
-		
+
 		// Should find 3 files: Button.vue, Form.jsx, Dialog.tsx
 		if len(files) != 3 {
 			t.Errorf("DiscoverFiles() found %d files, want 3", len(files))
 		}
 	})
-	
+
 	t.Run("respects include directories filter", func(t *testing.T) {
 		filter := types.FileFilter{
 			ExcludePatterns:    []string{"node_modules", ".test.", ".spec."},
 			IncludeDirectories: []string{"src/components"},
 			FileExtensions:     []string{".vue", ".jsx", ".tsx"},
 		}
-		
+
 		files, err := service.DiscoverFiles(tmpDir, filter)
 		if err != nil {
 			t.Fatalf("DiscoverFiles() error = %v", err)
 		}
-		
+
 		// Should find 3 files in src/components
 		if len(files) != 3 {
 			t.Errorf("DiscoverFiles() found %d files, want 3", len(files))
 		}
-		
+
 		// Verify all files are in src/components
 		for _, file := range files {
 			relPath, _ := filepath.Rel(tmpDir, file)

@@ -10,7 +10,7 @@ import (
 // Example demonstrates terminal output formatting
 func ExampleOutputFormatter_FormatTerminal() {
 	formatter := output.NewOutputFormatter()
-	
+
 	result := &types.ScanResult{
 		Matches: []types.ComponentMatch{
 			{
@@ -31,20 +31,20 @@ func ExampleOutputFormatter_FormatTerminal() {
 		ComponentType: "form",
 		ScannedFiles:  50,
 	}
-	
+
 	output := formatter.FormatTerminal(result)
 	fmt.Print(output)
-	
+
 	// Output:
-	// 
+	//
 	// Component Finder Results - form
 	// ==================================================
-	// 
+	//
 	// Found components in:
-	// 
+	//
 	//   src/components/UserForm.vue (line 12): q-form
 	//   src/pages/Login.vue (line 25): form
-	// 
+	//
 	// --------------------------------------------------
 	// Total components found: 2
 	// Files scanned: 50
@@ -54,7 +54,7 @@ func ExampleOutputFormatter_FormatTerminal() {
 // Example demonstrates JSON output formatting
 func ExampleOutputFormatter_FormatJSON() {
 	formatter := output.NewOutputFormatter()
-	
+
 	result := &types.ScanResult{
 		Matches: []types.ComponentMatch{
 			{
@@ -69,10 +69,10 @@ func ExampleOutputFormatter_FormatJSON() {
 		ComponentType: "button",
 		ScannedFiles:  20,
 	}
-	
+
 	jsonStr, _ := formatter.FormatJSON(result)
 	fmt.Println(jsonStr)
-	
+
 	// Output:
 	// {
 	//   "matches": [

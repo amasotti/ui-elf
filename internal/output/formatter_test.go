@@ -11,7 +11,7 @@ import (
 
 func TestFormatTerminal(t *testing.T) {
 	formatter := NewOutputFormatter()
-	
+
 	t.Run("formats result with matches", func(t *testing.T) {
 		result := &types.ScanResult{
 			Matches: []types.ComponentMatch{
@@ -33,9 +33,9 @@ func TestFormatTerminal(t *testing.T) {
 			ComponentType: "form",
 			ScannedFiles:  50,
 		}
-		
+
 		output := formatter.FormatTerminal(result)
-		
+
 		// Verify output contains key information
 		if !strings.Contains(output, "Component Finder Results - form") {
 			t.Error("Output should contain component type header")
@@ -62,7 +62,7 @@ func TestFormatTerminal(t *testing.T) {
 			t.Error("Output should contain scan time")
 		}
 	})
-	
+
 	t.Run("formats result with no matches", func(t *testing.T) {
 		result := &types.ScanResult{
 			Matches:       []types.ComponentMatch{},
@@ -71,9 +71,9 @@ func TestFormatTerminal(t *testing.T) {
 			ComponentType: "button",
 			ScannedFiles:  30,
 		}
-		
+
 		output := formatter.FormatTerminal(result)
-		
+
 		if !strings.Contains(output, "No components found") {
 			t.Error("Output should indicate no components found")
 		}
@@ -88,7 +88,7 @@ func TestFormatTerminal(t *testing.T) {
 
 func TestFormatJSON(t *testing.T) {
 	formatter := NewOutputFormatter()
-	
+
 	t.Run("formats result as valid JSON", func(t *testing.T) {
 		result := &types.ScanResult{
 			Matches: []types.ComponentMatch{
@@ -104,18 +104,18 @@ func TestFormatJSON(t *testing.T) {
 			ComponentType: "button",
 			ScannedFiles:  20,
 		}
-		
+
 		jsonStr, err := formatter.FormatJSON(result)
 		if err != nil {
 			t.Fatalf("FormatJSON failed: %v", err)
 		}
-		
+
 		// Verify it's valid JSON by unmarshaling
 		var parsed types.ScanResult
 		if err := json.Unmarshal([]byte(jsonStr), &parsed); err != nil {
 			t.Fatalf("Generated JSON is invalid: %v", err)
 		}
-		
+
 		// Verify data integrity
 		if parsed.TotalCount != 1 {
 			t.Errorf("Expected TotalCount 1, got %d", parsed.TotalCount)
@@ -154,52 +154,52 @@ func TestWrite(t *testing.T) {
 		ComponentType: "dialog",
 		ScannedFiles:  10,
 	}
-	
+
 	t.Run("writes JSON to file", func(t *testing.T) {
 		tmpFile := "test-output.json"
 		defer os.Remove(tmpFile)
-		
+
 		err := formatter.Write(result, "json", tmpFile)
 		if err != nil {
 			t.Fatalf("Write failed: %v", err)
 		}
-		
+
 		// Verify file was created
 		if _, err := os.Stat(tmpFile); os.IsNotExist(err) {
 			t.Error("JSON file was not created")
 		}
-		
+
 		// Verify file content
 		content, err := os.ReadFile(tmpFile)
 		if err != nil {
 			t.Fatalf("Failed to read output file: %v", err)
 		}
-		
+
 		var parsed types.ScanResult
 		if err := json.Unmarshal(content, &parsed); err != nil {
 			t.Fatalf("Output file contains invalid JSON: %v", err)
 		}
-		
+
 		if parsed.TotalCount != 1 {
 			t.Errorf("Expected TotalCount 1, got %d", parsed.TotalCount)
 		}
 	})
-	
+
 	t.Run("uses default filename when not specified", func(t *testing.T) {
 		defaultFile := "ui-elf-results.json"
 		defer os.Remove(defaultFile)
-		
+
 		err := formatter.Write(result, "json", "")
 		if err != nil {
 			t.Fatalf("Write failed: %v", err)
 		}
-		
+
 		// Verify default file was created
 		if _, err := os.Stat(defaultFile); os.IsNotExist(err) {
 			t.Error("Default JSON file was not created")
 		}
 	})
-	
+
 	t.Run("returns error for unsupported format", func(t *testing.T) {
 		err := formatter.Write(result, "invalid", "")
 		if err == nil {

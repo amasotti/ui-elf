@@ -6,7 +6,7 @@ import (
 
 func TestReactParser_SupportsFile(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	tests := []struct {
 		name     string
 		filePath string
@@ -23,7 +23,7 @@ func TestReactParser_SupportsFile(t *testing.T) {
 		{"ts file", "component.ts", false},
 		{"no extension", "component", false},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := parser.SupportsFile(tt.filePath)
@@ -36,7 +36,7 @@ func TestReactParser_SupportsFile(t *testing.T) {
 
 func TestReactParser_Parse_BasicJSX(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	tests := []struct {
 		name          string
 		content       string
@@ -154,8 +154,8 @@ function MyForm() {
 			expectedNames: []string{"Header", "Content", "Footer"},
 		},
 		{
-			name: "empty file",
-			content: ``,
+			name:          "empty file",
+			content:       ``,
 			expectedCount: 0,
 			expectedNames: []string{},
 		},
@@ -172,19 +172,19 @@ export default myFunction;`,
 			expectedNames: []string{},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches, err := parser.Parse(tt.content, "test.jsx")
-			
+
 			if err != nil {
 				t.Fatalf("Parse() error = %v", err)
 			}
-			
+
 			if len(matches) != tt.expectedCount {
 				t.Errorf("Parse() returned %d matches, want %d", len(matches), tt.expectedCount)
 			}
-			
+
 			// Check component names
 			for i, expectedName := range tt.expectedNames {
 				if i >= len(matches) {
@@ -192,7 +192,7 @@ export default myFunction;`,
 					continue
 				}
 				if matches[i].ComponentName != expectedName {
-					t.Errorf("Match %d: got component name %q, want %q", 
+					t.Errorf("Match %d: got component name %q, want %q",
 						i, matches[i].ComponentName, expectedName)
 				}
 			}
@@ -202,7 +202,7 @@ export default myFunction;`,
 
 func TestReactParser_Parse_TypeScript(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	tests := []struct {
 		name          string
 		content       string
@@ -244,19 +244,19 @@ const MyForm: React.FC<Props> = ({ title, onSubmit }) => {
 			expectedNames: []string{"List", "ListItem"},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches, err := parser.Parse(tt.content, "test.tsx")
-			
+
 			if err != nil {
 				t.Fatalf("Parse() error = %v", err)
 			}
-			
+
 			if len(matches) != tt.expectedCount {
 				t.Errorf("Parse() returned %d matches, want %d", len(matches), tt.expectedCount)
 			}
-			
+
 			// Check component names
 			for i, expectedName := range tt.expectedNames {
 				if i >= len(matches) {
@@ -264,7 +264,7 @@ const MyForm: React.FC<Props> = ({ title, onSubmit }) => {
 					continue
 				}
 				if matches[i].ComponentName != expectedName {
-					t.Errorf("Match %d: got component name %q, want %q", 
+					t.Errorf("Match %d: got component name %q, want %q",
 						i, matches[i].ComponentName, expectedName)
 				}
 			}
@@ -274,7 +274,7 @@ const MyForm: React.FC<Props> = ({ title, onSubmit }) => {
 
 func TestReactParser_Parse_LineNumbers(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	content := `import React from 'react';
 
 function MyComponent() {
@@ -287,25 +287,25 @@ function MyComponent() {
     </Container>
   );
 }`
-	
+
 	matches, err := parser.Parse(content, "test.jsx")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// We expect to find Container, Header, Content, Sidebar
 	if len(matches) != 4 {
 		t.Fatalf("Expected 4 matches, got %d", len(matches))
 	}
-	
+
 	// Check that line numbers are reasonable (not 0 or negative)
 	for i, match := range matches {
 		if match.Line <= 0 {
 			t.Errorf("Match %d: line number %d should be positive", i, match.Line)
 		}
 	}
-	
+
 	// Verify specific line numbers
 	expectedLines := map[string]int{
 		"Container": 5,
@@ -313,11 +313,11 @@ function MyComponent() {
 		"Content":   7,
 		"Sidebar":   8,
 	}
-	
+
 	for _, match := range matches {
 		if expectedLine, ok := expectedLines[match.ComponentName]; ok {
 			if match.Line != expectedLine {
-				t.Errorf("%s should be on line %d, got line %d", 
+				t.Errorf("%s should be on line %d, got line %d",
 					match.ComponentName, expectedLine, match.Line)
 			}
 		}
@@ -326,22 +326,22 @@ function MyComponent() {
 
 func TestReactParser_Parse_FilePath(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	content := `function App() {
   return <Button>Click</Button>;
 }`
-	
+
 	filePath := "src/components/App.jsx"
 	matches, err := parser.Parse(content, filePath)
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	if len(matches) != 1 {
 		t.Fatalf("Expected 1 match, got %d", len(matches))
 	}
-	
+
 	if matches[0].FilePath != filePath {
 		t.Errorf("FilePath = %q, want %q", matches[0].FilePath, filePath)
 	}
@@ -349,7 +349,7 @@ func TestReactParser_Parse_FilePath(t *testing.T) {
 
 func TestReactParser_Parse_MaterialUI(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	content := `import React from 'react';
 import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
@@ -374,28 +374,28 @@ function MyForm() {
     </>
   );
 }`
-	
+
 	matches, err := parser.Parse(content, "test.jsx")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// Expected: TextField, Button (3x), Dialog, DialogTitle, DialogContent, DialogActions
 	expectedComponents := map[string]int{
-		"TextField":      1,
-		"Button":         3,
-		"Dialog":         1,
-		"DialogTitle":    1,
-		"DialogContent":  1,
-		"DialogActions":  1,
+		"TextField":     1,
+		"Button":        3,
+		"Dialog":        1,
+		"DialogTitle":   1,
+		"DialogContent": 1,
+		"DialogActions": 1,
 	}
-	
+
 	foundComponents := make(map[string]int)
 	for _, match := range matches {
 		foundComponents[match.ComponentName]++
 	}
-	
+
 	for comp, expectedCount := range expectedComponents {
 		if foundComponents[comp] != expectedCount {
 			t.Errorf("Expected %d %s components, got %d", expectedCount, comp, foundComponents[comp])
@@ -405,7 +405,7 @@ function MyForm() {
 
 func TestReactParser_Parse_ComplexRealWorld(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	content := `import React, { useState } from 'react';
 import { Form, Input, Button, Select, Dialog, Card } from './components';
 
@@ -458,13 +458,13 @@ function UserForm() {
 }
 
 export default UserForm;`
-	
+
 	matches, err := parser.Parse(content, "test.jsx")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// Expected components (excluding HTML tags like div, h2, p):
 	// Form, Input, Select, Button (3x), Dialog, Card
 	expectedComponents := map[string]int{
@@ -475,18 +475,18 @@ export default UserForm;`
 		"Dialog": 1,
 		"Card":   1,
 	}
-	
+
 	foundComponents := make(map[string]int)
 	for _, match := range matches {
 		foundComponents[match.ComponentName]++
 	}
-	
+
 	for comp, expectedCount := range expectedComponents {
 		if foundComponents[comp] != expectedCount {
 			t.Errorf("Expected %d %s components, got %d", expectedCount, comp, foundComponents[comp])
 		}
 	}
-	
+
 	// Verify total count
 	expectedTotal := 8 // 1+1+1+3+1+1
 	if len(matches) != expectedTotal {
@@ -496,7 +496,7 @@ export default UserForm;`
 
 func TestReactParser_Parse_Fragments(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	tests := []struct {
 		name          string
 		content       string
@@ -530,19 +530,19 @@ func TestReactParser_Parse_Fragments(t *testing.T) {
 			expectedNames: []string{"Header", "Content"},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			matches, err := parser.Parse(tt.content, "test.jsx")
-			
+
 			if err != nil {
 				t.Fatalf("Parse() error = %v", err)
 			}
-			
+
 			if len(matches) != tt.expectedCount {
 				t.Errorf("Parse() returned %d matches, want %d", len(matches), tt.expectedCount)
 			}
-			
+
 			// Check component names
 			for i, expectedName := range tt.expectedNames {
 				if i >= len(matches) {
@@ -550,7 +550,7 @@ func TestReactParser_Parse_Fragments(t *testing.T) {
 					continue
 				}
 				if matches[i].ComponentName != expectedName {
-					t.Errorf("Match %d: got component name %q, want %q", 
+					t.Errorf("Match %d: got component name %q, want %q",
 						i, matches[i].ComponentName, expectedName)
 				}
 			}
@@ -560,17 +560,17 @@ func TestReactParser_Parse_Fragments(t *testing.T) {
 
 func TestReactParser_Parse_DuplicatesOnSameLine(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	content := `function App() {
   return <Button>Click</Button><Button>Another</Button>;
 }`
-	
+
 	matches, err := parser.Parse(content, "test.jsx")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// Should only count Button once per line (deduplication)
 	if len(matches) != 1 {
 		t.Errorf("Expected 1 match (deduplicated), got %d", len(matches))
@@ -579,7 +579,7 @@ func TestReactParser_Parse_DuplicatesOnSameLine(t *testing.T) {
 
 func TestReactParser_Parse_ComponentsInComments(t *testing.T) {
 	parser := NewReactParser()
-	
+
 	content := `function App() {
   return (
     <div>
@@ -588,13 +588,13 @@ func TestReactParser_Parse_ComponentsInComments(t *testing.T) {
     </div>
   );
 }`
-	
+
 	matches, err := parser.Parse(content, "test.jsx")
-	
+
 	if err != nil {
 		t.Fatalf("Parse() error = %v", err)
 	}
-	
+
 	// Note: Our regex-based parser will find both (commented and active)
 	// This is a known limitation of regex parsing vs AST parsing
 	// For MVP, this is acceptable

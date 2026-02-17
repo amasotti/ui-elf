@@ -32,22 +32,22 @@ func (p *ReactParser) Parse(fileContent string, filePath string) ([]types.Compon
 // Handles JSX elements like <Component /> or <Component>
 func parseReactJSXComponents(content string, filePath string, baseLineNumber int) []types.ComponentMatch {
 	var matches []types.ComponentMatch
-	
+
 	// Regex to match JSX component tags
 	// JSX components must start with uppercase letter
 	// Matches: <ComponentName followed by whitespace, >, /, or end of line
 	componentRegex := regexp.MustCompile(`<([A-Z][A-Za-z0-9]*)(?:[\s>/]|$)`)
-	
+
 	lines := strings.Split(content, "\n")
 	seenComponents := make(map[string]map[int]bool) // Track component:line to avoid duplicates
-	
+
 	for lineIdx, line := range lines {
 		componentMatches := componentRegex.FindAllStringSubmatch(line, -1)
-		
+
 		for _, match := range componentMatches {
 			if len(match) >= 2 {
 				componentName := match[1]
-				
+
 				// Skip if we've already seen this component on this line
 				if seenComponents[componentName] == nil {
 					seenComponents[componentName] = make(map[int]bool)
@@ -56,7 +56,7 @@ func parseReactJSXComponents(content string, filePath string, baseLineNumber int
 					continue
 				}
 				seenComponents[componentName][lineIdx] = true
-				
+
 				matches = append(matches, types.ComponentMatch{
 					FilePath:      filePath,
 					Line:          baseLineNumber + lineIdx,
@@ -66,6 +66,6 @@ func parseReactJSXComponents(content string, filePath string, baseLineNumber int
 			}
 		}
 	}
-	
+
 	return matches
 }

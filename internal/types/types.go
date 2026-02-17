@@ -1,3 +1,4 @@
+// Package types defines the data structures used throughout the application.
 package types
 
 // ComponentMatch represents a single component found in the codebase
@@ -27,7 +28,7 @@ type CLIOptions struct {
 
 // FileFilter defines criteria for filtering files during discovery
 type FileFilter struct {
-	ExcludePatterns   []string
+	ExcludePatterns    []string
 	IncludeDirectories []string
-	FileExtensions    []string
+	FileExtensions     []string
 }
