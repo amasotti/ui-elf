@@ -74,6 +74,28 @@ test-coverage:
 	$(GOTEST) -v -coverprofile=coverage.out ./...
 	$(GOCMD) tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated: coverage.html"
+# Run linter
+.PHONY: lint
+lint:
+	@echo "Running linter..."
+	golangci-lint run ./...
+
+# Run formatter
+.PHONY: fmt
+fmt:
+	@echo "Formatting code..."
+	$(GOCMD) fmt ./...
+
+# Run vet
+.PHONY: vet
+vet:
+	@echo "Running vet..."
+	$(GOCMD) vet ./...
+
+# Run all checks (fmt, vet, lint, test)
+.PHONY: check
+check: fmt vet lint test
+	@echo "All checks passed"
 
 # Clean build artifacts
 .PHONY: clean
