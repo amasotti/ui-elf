@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/types"
 )
 
 func TestFormatTerminal(t *testing.T) {

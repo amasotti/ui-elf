@@ -1,6 +1,6 @@
 package scanner
 
-import "component-finder-cli/internal/types"
+import "ui-elf/internal/types"
 
 // ComponentParser defines the interface for parsing component files
 // Implementations should handle specific file types (Vue, React, etc.)

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/types"
 )
 
 // FileDiscoveryService handles file discovery with filtering

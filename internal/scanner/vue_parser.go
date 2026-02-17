@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/types"
 )
 
 // VueParser parses Vue.js single-file components (.vue files)

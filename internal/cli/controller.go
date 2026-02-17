@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"component-finder-cli/internal/discovery"
-	"component-finder-cli/internal/output"
-	"component-finder-cli/internal/registry"
-	"component-finder-cli/internal/scanner"
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/discovery"
+	"ui-elf/internal/output"
+	"ui-elf/internal/registry"
+	"ui-elf/internal/scanner"
+	"ui-elf/internal/types"
 
 	"github.com/spf13/cobra"
 )
@@ -28,24 +28,24 @@ func NewController() *Controller {
 // setupRootCommand configures the root cobra command with flags and help text
 func (c *Controller) setupRootCommand() {
 	c.rootCmd = &cobra.Command{
-		Use:   "component-finder [flags]",
+		Use:   "ui-elf [flags]",
 		Short: "Scan Vue.js and React codebases for specific component types",
-		Long: `Component Finder CLI scans your codebase to locate specific component types
+		Long: `UI Elf scans your codebase to locate specific component types
 (forms, buttons, dialogs, and custom components) in Vue.js and React projects.
 
 The tool helps development teams audit their frontend applications by identifying
 where components are used and providing usage statistics.`,
 		Example: `  # Scan for forms in current directory
-  component-finder --component-type form --directory .
+  ui-elf --component-type form --directory .
 
   # Scan for buttons in src directory with JSON output
-  component-finder --component-type button --directory ./src --output json
+  ui-elf --component-type button --directory ./src --output json
 
   # Scan for custom component with directory filter
-  component-finder --component-type custom --directory . --filter src/components,src/views
+  ui-elf --component-type custom --directory . --filter src/components,src/views
 
   # Scan for dialogs with both terminal and JSON output
-  component-finder --component-type dialog --directory . --output both`,
+  ui-elf --component-type dialog --directory . --output both`,
 		RunE: c.run,
 	}
 

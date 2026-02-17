@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"component-finder-cli/internal/registry"
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/registry"
+	"ui-elf/internal/types"
 )
 
 func TestComponentScanner_Scan(t *testing.T) {

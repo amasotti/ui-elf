@@ -3,8 +3,8 @@ package output_test
 import (
 	"fmt"
 
-	"component-finder-cli/internal/output"
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/output"
+	"ui-elf/internal/types"
 )
 
 // Example demonstrates terminal output formatting

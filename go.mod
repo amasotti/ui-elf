@@ -1,4 +1,4 @@
-module component-finder-cli
+module ui-elf
 
 go 1.25.0
 

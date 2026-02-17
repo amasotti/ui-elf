@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/types"
 )
 
 // ReactParser parses React component files (.jsx and .tsx files)

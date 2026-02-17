@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"component-finder-cli/internal/registry"
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/registry"
+	"ui-elf/internal/types"
 )
 
 // ComponentScanner coordinates the scanning process across multiple files

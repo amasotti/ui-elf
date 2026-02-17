@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/types"
 )
 
 func TestShouldExcludeFile(t *testing.T) {

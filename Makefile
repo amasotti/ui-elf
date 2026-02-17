@@ -1,7 +1,7 @@
-# Component Finder CLI - Makefile
+# UI Elf - Makefile
 
 # Binary name
-BINARY_NAME=component-finder
+BINARY_NAME=ui-elf
 
 # Build directory
 BUILD_DIR=build
@@ -15,7 +15,7 @@ GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 
 # Main package path
-MAIN_PATH=cmd/component-finder/main.go
+MAIN_PATH=cmd/ui-elf/main.go
 
 # Build the binary
 .PHONY: build
@@ -83,7 +83,7 @@ clean:
 	rm -f $(BINARY_NAME)
 	rm -rf $(BUILD_DIR)
 	rm -f coverage.out coverage.html
-	rm -f component-finder-results.json
+	rm -f ui-elf-results.json
 	@echo "Clean complete"
 
 # Download dependencies
@@ -103,7 +103,7 @@ run: build
 # Display help
 .PHONY: help
 help:
-	@echo "Component Finder CLI - Makefile targets:"
+	@echo "UI Elf - Makefile targets:"
 	@echo ""
 	@echo "  make build          - Build the binary for current platform"
 	@echo "  make build-all      - Build binaries for all platforms (Linux, macOS, Windows)"

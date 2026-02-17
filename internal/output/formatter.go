@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"component-finder-cli/internal/types"
+	"ui-elf/internal/types"
 )
 
 // OutputFormatter handles formatting and displaying scan results
